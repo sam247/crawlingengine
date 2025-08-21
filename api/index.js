@@ -1,12 +1,20 @@
 const express = require('express');
 const cors = require('cors');
 const crawlerRoutes = require('./routes/crawler');
+const creditRoutes = require('./routes/credits');
+const recheckRoutes = require('./routes/recheck');
+const rateLimiterMiddleware = require('../src/middleware/rateLimiter');
 
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: '*', // Be more restrictive in production
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
+app.use(rateLimiterMiddleware);
 
 // API Documentation route
 app.get('/api', (req, res) => {
@@ -23,6 +31,8 @@ app.get('/api', (req, res) => {
 
 // Routes
 app.use('/api/crawler', crawlerRoutes);
+app.use('/api/credits', creditRoutes);
+app.use('/api/recheck', recheckRoutes);
 
 // Error handling
 app.use((err, req, res, next) => {

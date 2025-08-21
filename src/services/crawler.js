@@ -1,10 +1,17 @@
 const puppeteer = require('puppeteer');
 const robotsParser = require('robots-parser');
+const WebhookService = require('./webhook');
+const CreditService = require('./credits');
+const SEOValidator = require('./seoValidator');
+const { v4: uuidv4 } = require('uuid');
 
 class CrawlerService {
   constructor() {
     this.browser = null;
     this.visitedUrls = new Set();
+    this.webhookService = new WebhookService();
+    this.creditService = new CreditService();
+    this.seoValidator = new SEOValidator();
   }
 
   async initialize() {
@@ -15,6 +22,17 @@ class CrawlerService {
   }
 
   async crawl(request) {
+    if (!request.userId) {
+      throw new Error('User ID is required');
+    }
+
+    // Check credit balance and reserve credits
+    const estimatedCost = this.creditService.calculateCrawlCost(1, request.depth || 1, 
+      (request.options?.customChecks || []).length);
+    
+    const operationId = uuidv4();
+    await this.creditService.reserveCredits(request.userId, estimatedCost, operationId);
+
     if (!this.browser) {
       await this.initialize();
     }
@@ -40,7 +58,8 @@ class CrawlerService {
 
       await page.close();
 
-      return {
+      const result = {
+        jobId: uuidv4(),
         url: request.url,
         status: 'completed',
         startTime,
@@ -50,17 +69,45 @@ class CrawlerService {
         creditsUsed: Math.ceil(pagesChecked / 10)
       };
 
+      // Calculate final credit cost and release reservation
+      const finalCost = this.creditService.calculateCrawlCost(pagesChecked, request.depth || 1,
+        (request.options?.customChecks || []).length);
+      await this.creditService.releaseReservation(operationId, true);
+      
+      // Deduct actual credits used
+      await this.creditService.deductCredits(request.userId, finalCost, `Crawl: ${request.url}`);
+      
+      // Add credit info to result
+      result.creditsUsed = finalCost;
+      
+      // Notify Lovable about completion
+      await this.webhookService.notifyCrawlComplete(result);
+      
+      return result;
+
     } catch (error) {
       console.error('Crawl failed:', error);
-      return {
+      
+      // Release reserved credits on failure
+      if (operationId) {
+        await this.creditService.releaseReservation(operationId, false);
+      }
+      
+      const result = {
+        jobId: uuidv4(),
         url: request.url,
         status: 'failed',
         startTime,
         endTime: new Date(),
         error: error.message,
         pagesChecked,
-        creditsUsed: Math.ceil(pagesChecked / 10)
+        creditsUsed: 0 // No credits charged on failure
       };
+      
+      // Notify about failure
+      await this.webhookService.notifyCrawlComplete(result);
+      
+      return result;
     }
   }
 
@@ -70,31 +117,35 @@ class CrawlerService {
     }
 
     try {
-      await page.goto(url, { waitUntil: 'networkidle0' });
+      await page.goto(url, { 
+        waitUntil: ['networkidle0', 'domcontentloaded'],
+        timeout: 30000
+      });
+      
       this.visitedUrls.add(url);
       context.pagesChecked++;
 
-      // Basic SEO checks
-      const title = await page.title();
-      const description = await page.$eval('meta[name="description"]', el => el.content).catch(() => null);
+      // Run comprehensive SEO validation
+      const { issues, metrics } = await this.seoValidator.validatePage(page, url);
+      context.issues.push(...issues);
       
-      if (!title || title.length < 10) {
-        context.issues.push({
-          type: 'seo',
-          severity: 'medium',
-          message: 'Title tag is missing or too short',
-          url
-        });
+      // Store metrics for the page
+      if (!context.metrics) {
+        context.metrics = {
+          performance: {},
+          seo: {},
+          accessibility: {},
+          technical: {}
+        };
       }
-
-      if (!description) {
-        context.issues.push({
-          type: 'seo',
-          severity: 'medium',
-          message: 'Meta description is missing',
-          url
-        });
-      }
+      
+      // Merge metrics
+      Object.keys(metrics).forEach(category => {
+        context.metrics[category] = {
+          ...context.metrics[category],
+          ...metrics[category]
+        };
+      });
 
       // Find and follow links if depth allows
       if (context.depth > 1) {

@@ -1,0 +1,100 @@
+---
+alwaysApply: true
+---
+
+Building specifically for lovable project here - https://github.com/sam247/site-aura
+
+Also building as a multi use API
+
+Dont use mock data or local testing arcitecture. We're using live information and building live on verce. 
+
+Always deploy to github after changes so Vercel can pick up the deployment - https://github.com/sam247/crawlingengine
+
+Current Implementation ✅
+
+Core Crawler Engine
+Puppeteer-based crawling
+Depth-first crawling with configurable depth
+Robots.txt compliance
+Parallel page processing
+Error handling
+
+Advanced SEO Validation
+Critical checks (Mobile responsiveness, Core Web Vitals, HTTPS)
+High priority (Title, Meta description, Heading structure)
+Medium priority (Images, Content quality, Internal linking)
+Low priority (Social meta tags, URL structure, Schema markup)
+Performance metrics collection
+
+Credit System
+Balance tracking with Redis
+Transaction history
+Credit packages
+Usage calculation
+Reservation system for long operations
+
+Webhook Integration
+Secure signature verification
+Retry mechanism
+Comprehensive result reporting
+Error handling
+
+Next Steps 🚀
+Rate Limiting (In Progress)
+Per-user limits
+Per-domain limits
+Configurable timeframes
+Redis-based tracking
+
+Monitoring System
+Performance metrics
+Error tracking
+Usage statistics
+Health checks
+Alert system
+
+Caching System
+Redis-based result caching
+Intelligent cache invalidation
+Partial result updates
+Cache warming
+
+Error Recovery
+Automatic retry system
+Circuit breaker pattern
+Fallback mechanisms
+State recovery
+
+Custom Rules Engine
+User-defined validation rules
+Rule testing framework
+Rule marketplace
+Performance optimization
+
+Future Enhancements 🎯
+
+Performance Optimization
+Browser instance pooling
+Resource usage optimization
+Response time improvements
+Memory management
+
+Security Hardening
+Input validation
+Rate limit evasion protection
+DDoS protection
+Audit logging
+
+Advanced Features
+JavaScript rendering options
+Custom HTTP headers
+Cookie management
+Proxy support
+Screenshot capture
+PDF generation
+
+API Enhancements
+Batch operations
+Progress tracking
+Real-time updates
+Bulk export
