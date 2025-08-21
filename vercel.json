@@ -12,14 +12,20 @@
   ],
   "routes": [
     {
-      "src": "/(.*)",
-      "dest": "api/index.js",
+      "src": "/api(.*)",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "X-Requested-With, Content-Type, Accept"
+      },
       "continue": true
+    },
+    {
+      "src": "/(.*)",
+      "dest": "api/index.js"
     }
   ],
   "env": {
     "NODE_ENV": "production"
-  },
-  "public": true,
-  "bypassToken": false
+  }
 }
