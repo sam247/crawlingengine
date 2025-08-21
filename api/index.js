@@ -9,6 +9,11 @@ const rateLimiterMiddleware = require('../src/middleware/rateLimiter');
 const monitoringMiddleware = require('../src/middleware/monitoring');
 
 // Validate environment variables
+console.log('Environment variables:', {
+  UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
+  UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN ? '***' : undefined
+});
+
 try {
   validateConfig();
 } catch (error) {

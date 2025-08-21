@@ -28,7 +28,7 @@ router.post('/issues/:issueId', async (req, res) => {
       
       // Deduct credits only if recheck was successful
       await creditService.releaseReservation(issueId, true);
-      await creditService.deductCredits(userId, recheckCost, \`Recheck: \${type}\`);
+      await creditService.deductCredits(userId, recheckCost, 'Recheck: ' + type);
 
       res.json({
         success: true,
