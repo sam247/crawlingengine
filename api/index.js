@@ -3,7 +3,9 @@ const cors = require('cors');
 const crawlerRoutes = require('./routes/crawler');
 const creditRoutes = require('./routes/credits');
 const recheckRoutes = require('./routes/recheck');
+const healthRoutes = require('./routes/health');
 const rateLimiterMiddleware = require('../src/middleware/rateLimiter');
+const monitoringMiddleware = require('../src/middleware/monitoring');
 
 const app = express();
 
@@ -14,6 +16,7 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
+app.use(monitoringMiddleware);
 app.use(rateLimiterMiddleware);
 
 // API Documentation route
@@ -33,6 +36,7 @@ app.get('/api', (req, res) => {
 app.use('/api/crawler', crawlerRoutes);
 app.use('/api/credits', creditRoutes);
 app.use('/api/recheck', recheckRoutes);
+app.use('/api/health', healthRoutes);
 
 // Error handling
 app.use((err, req, res, next) => {
