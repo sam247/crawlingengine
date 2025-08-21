@@ -13,10 +13,13 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "api/index.js"
+      "dest": "api/index.js",
+      "continue": true
     }
   ],
   "env": {
     "NODE_ENV": "production"
-  }
+  },
+  "public": true,
+  "bypassToken": false
 }
