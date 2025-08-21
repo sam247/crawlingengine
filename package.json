@@ -1,5 +1,8 @@
 {
   "name": "crawlingengine",
+  "engines": {
+    "node": "18.x"
+  },
   "version": "1.0.0",
   "description": "Site Aura Crawler API - Website crawling engine with credit-based access",
   "main": "api/index.js",
