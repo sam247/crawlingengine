@@ -1,9 +1,7 @@
 const express = require('express');
-const RecheckService = require('../../src/services/recheckService');
 const CreditService = require('../../src/services/credits');
 
 const router = express.Router();
-const recheckService = new RecheckService();
 const creditService = new CreditService();
 
 // Recheck specific issue
@@ -24,6 +22,9 @@ router.post('/issues/:issueId', async (req, res) => {
     await creditService.reserveCredits(userId, recheckCost, issueId);
 
     try {
+      // Lazy-load to avoid importing Puppeteer on cold start
+      const RecheckService = require('../../src/services/recheckService');
+      const recheckService = new RecheckService();
       const result = await recheckService.recheckIssue(url, issueId, type);
       
       // Deduct credits only if recheck was successful
@@ -65,10 +66,10 @@ router.post('/url', async (req, res) => {
     await creditService.reserveCredits(userId, recheckCost, url);
 
     try {
+      const RecheckService = require('../../src/services/recheckService');
+      const recheckService = new RecheckService();
       const results = await Promise.all(
-        issues.map(issue => 
-          recheckService.recheckIssue(url, issue.id, issue.type)
-        )
+        issues.map(issue => recheckService.recheckIssue(url, issue.id, issue.type))
       );
 
       // Deduct credits after successful recheck
