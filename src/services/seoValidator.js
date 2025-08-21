@@ -101,7 +101,7 @@ class SEOValidator {
           issues.push({
             type: 'performance',
             message: 'Slow page load time',
-            details: \`Page takes \${(performanceMetrics.loadTime / 1000).toFixed(2)}s to load. Target: < 3s\`,
+            details: 'Page takes ' + (performanceMetrics.loadTime / 1000).toFixed(2) + 's to load. Target: < 3s',
             metrics: performanceMetrics
           });
         }
@@ -127,7 +127,7 @@ class SEOValidator {
             issues.push({
               type: 'performance',
               message: 'Render-blocking JavaScript detected',
-              details: \`\${blockingScripts.length} scripts may block rendering\`
+              details: blockingScripts.length + ' scripts may block rendering'
             });
           }
 
@@ -137,7 +137,7 @@ class SEOValidator {
             issues.push({
               type: 'technical',
               message: 'JavaScript runtime errors detected',
-              details: \`\${errors.length} JavaScript errors found\`
+              details: errors.length + ' JavaScript errors found'
             });
           }
 
@@ -394,7 +394,7 @@ class SEOValidator {
           issues.push({
             type: 'content',
             message: 'Duplicate content detected',
-            details: \`\${duplicateParagraphs.length} paragraphs appear multiple times\`
+            details: duplicateParagraphs.length + ' paragraphs appear multiple times'
           });
         }
 
@@ -428,7 +428,7 @@ class SEOValidator {
           issues.push({
             type: 'mobile',
             message: 'Small tap targets',
-            details: \`\${smallTapTargets} elements are too small for mobile users\`
+            details: smallTapTargets + ' elements are too small for mobile users'
           });
         }
 
@@ -445,7 +445,7 @@ class SEOValidator {
           issues.push({
             type: 'mobile',
             message: 'Small font sizes',
-            details: \`\${smallFonts} text elements have font size smaller than 16px\`
+            details: smallFonts + ' text elements have font size smaller than 16px'
           });
         }
 
@@ -475,7 +475,7 @@ class SEOValidator {
               issues.push({
                 type: 'content',
                 message: 'Keyword stuffing detected',
-                details: \`Keyword "\${word}" appears too frequently (\${density.toFixed(1)}%)\`
+                details: 'Keyword "' + word + '" appears too frequently (' + density.toFixed(1) + '%)'
               });
             }
           });
@@ -499,7 +499,7 @@ class SEOValidator {
             issues.push({
               type: 'seo',
               message: 'Main keyword not in key elements',
-              details: \`Consider adding "\${keyword}" to title, description, or H1\`
+              details: 'Consider adding "' + keyword + '" to title, description, or H1'
             });
           }
         });
@@ -514,14 +514,14 @@ class SEOValidator {
             issues.push({
               type: 'accessibility',
               message: 'Image missing alt text',
-              details: \`Add alt text to image: \${img.src}\`
+              details: 'Add alt text to image: ' + img.src
             });
           }
           if (!img.width || !img.height) {
             issues.push({
               type: 'performance',
               message: 'Image missing dimensions',
-              details: \`Add width and height attributes to prevent layout shift: \${img.src}\`
+              details: 'Add width and height attributes to prevent layout shift: ' + img.src
             });
           }
         }
