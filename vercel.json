@@ -2,12 +2,13 @@
   "version": 2,
   "functions": {
     "api/index.js": {
-      "memory": 1024,
-      "maxDuration": 60
+      "runtime": "@vercel/node@2.15.10"
     },
     "api/ping.js": {
-      "memory": 128,
-      "maxDuration": 10
+      "runtime": "@vercel/node@2.15.10"
+    },
+    "api/minimal.js": {
+      "runtime": "@vercel/node@2.15.10"
     }
   },
   "routes": [
