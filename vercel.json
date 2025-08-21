@@ -4,9 +4,17 @@
     "api/index.js": {
       "memory": 1024,
       "maxDuration": 60
+    },
+    "api/ping.js": {
+      "memory": 128,
+      "maxDuration": 10
     }
   },
   "routes": [
+    {
+      "src": "/ping",
+      "dest": "/api/ping.js"
+    },
     {
       "src": "/api(.*)",
       "headers": {
