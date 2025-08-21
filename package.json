@@ -1,7 +1,7 @@
 {
   "name": "crawlingengine",
   "engines": {
-    "node": "18.x"
+    "node": "20.x"
   },
   "version": "1.0.0",
   "description": "Site Aura Crawler API - Website crawling engine with credit-based access",
@@ -10,7 +10,8 @@
     "dev": "vercel dev",
     "deploy": "vercel deploy",
     "test": "jest",
-    "start": "node api/index.js"
+    "start": "node api/index.js",
+    "build": "echo 'No build step needed'"
   },
   "dependencies": {
     "@upstash/redis": "^1.28.3",
