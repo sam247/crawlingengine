@@ -1,8 +1,6 @@
 const express = require('express');
-const CrawlerService = require('../../src/services/crawler');
 
 const router = express.Router();
-const crawler = new CrawlerService();
 
 // Initialize crawler
 router.get('/status', (req, res) => {
@@ -12,7 +10,7 @@ router.get('/status', (req, res) => {
   });
 });
 
-// Start a crawl
+// Start a crawl (lazy-load Puppeteer/CrawlerService to avoid cold-start crashes)
 router.post('/crawl', async (req, res) => {
   try {
     const { url, depth = 1 } = req.body;
@@ -31,6 +29,10 @@ router.post('/crawl', async (req, res) => {
         error: 'Invalid URL'
       });
     }
+
+    // Lazy import to avoid importing Puppeteer at cold start
+    const CrawlerService = require('../../src/services/crawler');
+    const crawler = new CrawlerService();
 
     const result = await crawler.crawl({
       url,
