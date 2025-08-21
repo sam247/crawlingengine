@@ -40,36 +40,17 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
-app.use(monitoringMiddleware);
-app.use(rateLimiterMiddleware);
+// Temporarily disable middleware for testing
+// app.use(monitoringMiddleware);
+// app.use(rateLimiterMiddleware);
 
 // API Documentation route
 app.get('/api', (req, res) => {
-  try {
-    console.log('API request received');
-    console.log('Environment:', {
-      NODE_ENV: process.env.NODE_ENV,
-      REDIS_URL: process.env.UPSTASH_REDIS_REST_URL ? 'Set' : 'Not set',
-      REDIS_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN ? 'Set' : 'Not set'
-    });
-
-    res.json({
-      status: 'ok',
-      message: 'Site Aura Crawler API',
-      version: '1.0.0',
-      env: process.env.NODE_ENV,
-      endpoints: {
-        status: '/api/crawler/status',
-        crawl: '/api/crawler/crawl'
-      }
-    });
-  } catch (error) {
-    console.error('API error:', error);
-    res.status(500).json({
-      status: 'error',
-      message: error.message
-    });
-  }
+  res.json({
+    status: 'ok',
+    message: 'Site Aura Crawler API',
+    version: '1.0.0'
+  });
 });
 
 // Routes
