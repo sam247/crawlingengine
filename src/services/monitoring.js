@@ -1,13 +1,10 @@
-const { Redis } = require('@upstash/redis');
+const redis = require('../utils/redis');
 const winston = require('winston');
 const { createLogger, format, transports } = winston;
 
 class MonitoringService {
   constructor() {
-    this.redis = new Redis({
-      url: process.env.UPSTASH_REDIS_REST_URL,
-      token: process.env.UPSTASH_REDIS_REST_TOKEN,
-    });
+    this.redis = redis;
 
     // Initialize logger
     this.logger = createLogger({

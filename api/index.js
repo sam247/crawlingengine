@@ -5,8 +5,9 @@ const crawlerRoutes = require('./routes/crawler');
 const creditRoutes = require('./routes/credits');
 const recheckRoutes = require('./routes/recheck');
 const healthRoutes = require('./routes/health');
-const rateLimiterMiddleware = require('../src/middleware/rateLimiter');
-const monitoringMiddleware = require('../src/middleware/monitoring');
+// Lazy-require middlewares only when enabling them to avoid startup side-effects
+// const rateLimiterMiddleware = require('../src/middleware/rateLimiter');
+// const monitoringMiddleware = require('../src/middleware/monitoring');
 
 // Global error handler for uncaught exceptions
 process.on('uncaughtException', (error) => {
@@ -18,17 +19,11 @@ process.on('unhandledRejection', (reason, promise) => {
   console.error('Unhandled Rejection at:', promise, 'reason:', reason);
 });
 
-// Validate environment variables
-console.log('Environment variables:', {
-  UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
-  UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN ? '***' : undefined
-});
-
+// Validate environment variables (non-fatal for base routes)
 try {
   validateConfig();
 } catch (error) {
-  console.error('Configuration error:', error.message);
-  process.exit(1);
+  console.warn('Non-fatal configuration warning:', error.message);
 }
 
 const app = express();
@@ -40,7 +35,10 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
-// Temporarily disable middleware for testing
+// Middlewares are disabled for now to isolate startup errors
+// If needed later, require and enable them below:
+// const monitoringMiddleware = require('../src/middleware/monitoring');
+// const rateLimiterMiddleware = require('../src/middleware/rateLimiter');
 // app.use(monitoringMiddleware);
 // app.use(rateLimiterMiddleware);
 
