@@ -1,11 +1,8 @@
-const { Redis } = require('@upstash/redis');
+const createRedisClient = require('../utils/redis');
 
 class CreditService {
   constructor() {
-    this.redis = new Redis({
-      url: process.env.UPSTASH_REDIS_REST_URL,
-      token: process.env.UPSTASH_REDIS_REST_TOKEN,
-    });
+    this.redis = createRedisClient();
 
     this.packages = {
       starter: {
