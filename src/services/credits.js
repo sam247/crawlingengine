@@ -1,8 +1,8 @@
-const createRedisClient = require('../utils/redis');
+const redis = require('../utils/redis');
 
 class CreditService {
   constructor() {
-    this.redis = createRedisClient();
+    this.redis = redis;
 
     this.packages = {
       starter: {
